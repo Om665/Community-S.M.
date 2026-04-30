@@ -3,44 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الفوائض المجتمعية</title>
+    <title>إدارة الفوائض المجتمعية | نسخة الويب</title>
     <link rel="stylesheet" href="style.css">
-    <!-- مكتبة Firebase الأساسية -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
-    <nav class="navbar">
-        <h2>إدارة الفوائض المجتمعية</h2>
-        <div id="user-info"></div>
-    </nav>
+    <!-- الهيدر -->
+    <header class="main-header">
+        <div class="logo">إدارة الفوائض المجتمعية</div>
+        <div class="location-badge">📍 حي النعيم (تجربة)</div>
+    </header>
 
-    <div class="container">
-        <!-- قسم تسجيل الدخول -->
-        <section id="login-card" class="card">
-            <h3>مرحباً بك في حيّك</h3>
-            <p>سجل دخولك برقم الجوال لبدء العطاء</p>
-            <input type="tel" id="phoneNumber" placeholder="+966 5xxxxxxx">
-            <div id="recaptcha-container"></div>
-            <button onclick="onSignInSubmit()" id="sign-in-button">أرسل كود التحقق</button>
-        </section>
+    <main class="container">
+        <!-- شريط المعلومات -->
+        <div class="info-bar">
+            <span>الفوائض المتوفرة حالياً بالقرب منك</span>
+        </div>
 
-        <!-- قسم عرض الفوائض (يظهر بعد الدخول) -->
-        <section id="main-content" style="display:none;">
-            <div class="filter-bar">
-                <span>الفوائض المتاحة في الحي</span>
-            </div>
-            <div id="items-grid" class="grid">
-                <!-- الفوائض تظهر هنا تلقائياً -->
-            </div>
-        </section>
+        <!-- شبكة عرض الأغراض -->
+        <div id="items-grid" class="items-grid">
+            <!-- سيتم تعبئتها بواسطة JavaScript -->
+        </div>
+    </main>
+
+    <!-- نافذة إضافة فائض (Popup) -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <h3>أضف فائضاً للحي</h3>
+            <form id="surplus-form">
+                <input type="text" id="item-name" placeholder="اسم الغرض (مثلاً: طاولة خشب)" required>
+                <select id="item-status">
+                    <option value="ممتازة">حالة ممتازة</option>
+                    <option value="جيدة">حالة جيدة</option>
+                    <option value="تحتاج صيانة">تحتاج صيانة</option>
+                </select>
+                <textarea id="item-desc" placeholder="وصف بسيط للغرض..."></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+                    <button type="submit" class="btn-submit">نشر الآن</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- زر الإضافة العائم -->
-    <button class="fab" onclick="showAddForm()" style="display:none;" id="add-fab">+</button>
+    <!-- الزر العائم للإضافة -->
+    <button class="fab" onclick="openModal()">+</button>
 
-    <script src="auth.js"></script>
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
