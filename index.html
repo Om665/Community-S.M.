@@ -7,48 +7,84 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- الهيدر -->
     <header class="main-header">
-        <div class="logo">إدارة الفوائض المجتمعية</div>
-        <div class="location-badge">📍 حي النعيم (تجربة)</div>
-    </header>
-
-    <main class="container">
-        <!-- شريط المعلومات -->
-        <div class="info-bar">
-            <span>الفوائض المتوفرة حالياً بالقرب منك</span>
+        <h1>إدارة الفوائض المجتمعية</h1>
+        <div id="user-info"></div>
+        <div class="header-right">
+            <button id="add-item-header-btn" onclick="showAddItemForm()" style="display: none;">إضافة فائض</button>
+            <button id="manage-categories-btn" onclick="openCategoryManager()" style="display: none;">إدارة الأصناف</button>
+            <button id="view-history-header-btn" onclick="viewHistory()" style="display: none;">السجل</button>
+            <button id="login-btn" onclick="showLoginForm()">تسجيل الدخول</button>
+            <button id="admin-login-btn" onclick="showAdminLoginForm()">دخول الادمن</button>
+            <button id="logout-btn" onclick="logout()" style="display: none;">تسجيل خروج</button>
         </div>
-
-        <!-- شبكة عرض الأغراض -->
-        <div id="items-grid" class="items-grid">
-            <!-- سيتم تعبئتها بواسطة JavaScript -->
+    </header>
+    <!-- قائمة الأصناف الرأسية -->
+    <div id="category-list-vertical" class="category-list-vertical"></div>
+        <!-- نافذة إدارة الأصناف -->
+        <div id="category-manager-modal" class="modal" style="display:none;">
+            <div class="modal-content" style="max-width:400px;">
+                <span class="close" onclick="closeCategoryManager()">&times;</span>
+                <h3>إدارة الأصناف</h3>
+                <ul id="category-list" style="padding:0;list-style:none;margin-bottom:16px;"></ul>
+                <input type="text" id="new-category-input" placeholder="اسم الصنف الجديد" style="width:70%;padding:8px;">
+                <button onclick="addCategory()">إضافة</button>
+            </div>
+        </div>
+    <main>
+        <div id="items-grid" class="items-grid"></div>
+        <div id="provider-actions" style="display: none; text-align: center; margin: 20px;">
+            <button onclick="viewHistory()">السجل</button>
         </div>
     </main>
-
-    <!-- نافذة إضافة فائض (Popup) -->
-    <div id="add-modal" class="modal">
-        <div class="modal-content">
-            <h3>أضف فائضاً للحي</h3>
-            <form id="surplus-form">
-                <input type="text" id="item-name" placeholder="اسم الغرض (مثلاً: طاولة خشب)" required>
-                <select id="item-status">
-                    <option value="ممتازة">حالة ممتازة</option>
-                    <option value="جيدة">حالة جيدة</option>
-                    <option value="تحتاج صيانة">تحتاج صيانة</option>
-                </select>
-                <textarea id="item-desc" placeholder="وصف بسيط للغرض..."></textarea>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
-                    <button type="submit" class="btn-submit">نشر الآن</button>
-                </div>
-            </form>
+    <div id="history-view" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+        <div style="background: white; margin: 20px auto; padding: 20px; max-width: 800px; border-radius: 10px;">
+            <h2>السجل</h2>
+            <div style="margin-bottom: 30px;">
+                <h3>الفوائض المرسلة</h3>
+                <div id="sent-items-list"></div>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <h3>الفوائض المستلمة</h3>
+                <div id="received-items-list"></div>
+            </div>
+            <button onclick="closeHistory()">إغلاق</button>
         </div>
     </div>
-
-    <!-- الزر العائم للإضافة -->
-    <button class="fab" onclick="openModal()">+</button>
-
-    <script src="script.js"></script>
+    <div id="login-form" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc;">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="user-name" placeholder="الاسم" required>
+        <input type="tel" id="user-phone" placeholder="رقم الجوال" required>
+        <select id="user-city" onchange="updateLoginDistricts()" required>
+            <option value="">المدينة</option>
+            <option value="جدة">جدة</option>
+            <option value="مكة">مكة</option>
+        </select>
+        <select id="user-district" required disabled>
+            <option value="">اختر الحي (اختر المدينة أولاً)</option>
+        </select>
+        <button onclick="login()">دخول</button>
+        <button onclick="document.getElementById('login-form').style.display='none'">إلغاء</button>
+    </div>
+    <div id="admin-login-form" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc;">
+        <h2>دخول الادمن</h2>
+        <input type="text" id="admin-name" placeholder="اسم الادمن" required>
+        <input type="tel" id="admin-phone" placeholder="رقم الجوال" required>
+        <input type="password" id="admin-password" placeholder="كلمة مرور الادمن" required>
+        <button onclick="adminLogin()">دخول</button>
+        <button onclick="document.getElementById('admin-login-form').style.display='none'">إلغاء</button>
+    </div>
+    <div id="add-item-form" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc;">
+        <h2>إضافة فائض</h2>
+        <select id="item-type" required>
+            <option value="">اختر النوع</option>
+        </select>
+        <input type="text" id="item-description" placeholder="وصف مختصر" required>
+        <input type="file" id="item-image" accept="image/*" required>
+        <img id="image-preview" style="max-width: 200px; display: none;">
+        <button onclick="addItem()">إضافة</button>
+        <button onclick="document.getElementById('add-item-form').style.display='none'">إلغاء</button>
+    </div>
+    <script src="script.js" defer></script>
 </body>
 </html>
